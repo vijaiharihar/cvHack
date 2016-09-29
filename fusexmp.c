@@ -55,7 +55,10 @@ void log(char * function_name, const char * str,...)
 	int max_va_list_size = 4146;
 	char* va_msg = (char*)malloc( strlen( str ) + max_va_list_size );
 	strcpy(va_msg, function_name);
-	int va_string_size = vsnprintf( &va_msg[function_name], strlen( str ) + max_va_list_size, str, args );
+	int va_string_size = vsnprintf( &va_msg[strlen(function_name)], strlen( str ) + max_va_list_size, str, args );
+	va_string_size = strlen(va_msg);
+	va_msg[va_string_size]='\n';
+	va_msg[va_string_size+1]='\0';
 	int log = open( LOG_FILE_PATH, O_CREAT | O_APPEND | O_RDWR, 0664 );
 	write( log, va_msg, strlen( va_msg ) );
 	close(log);
@@ -447,6 +450,6 @@ int main(int argc, char *argv[])
 	umask(0);
 	strcpy(LOG_FILE_PATH,argv[2]);
 	printf("%s\n",LOG_FILE_PATH);
-	log(__FUNCTION__,"%d-first log",12);
+	log(__FUNCTION__," %d-first log",12);
 	return fuse_main(argc-1, argv, &xmp_oper, NULL);
 }
